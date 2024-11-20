@@ -39,12 +39,13 @@ function App() {
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-[#1a1b3b] text-white flex flex-col">
+    <div className="fixed inset-2 bg-[#1a1b3b] text-white flex flex-col">
       <div className="flex-1 overflow-y-auto">
         <div className="w-full max-w-md mx-auto px-4 pb-24">
-          <TopBar />
+        <div className="flex justify-between items-center mb-3">
+       </div>
 
-          <div className="flex gap-4 mb-6">
+          <div className="flex gap-4 mb-3">
             <button className="flex-1 bg-[#4a4c8c] rounded-2xl py-3 px-6 text-center">
               History
             </button>

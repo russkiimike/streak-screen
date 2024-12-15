@@ -1,27 +1,64 @@
 import React, { useState } from 'react';
 import { ChevronRight, Check } from 'lucide-react';
 
+const generateContinuousTemplate = (gridSize) => {
+  const template = [];
+  let workoutsRemaining = 35; // Total workouts for the 4 months
+  let workoutsPerWeek = 5;
+
+  for (let i = 0; i < gridSize; i++) {
+    const dayOfWeek = i % 7;
+    const monthIndex = Math.floor(i / 7);
+
+    // Calculate the week in the cycle (2-week periods)
+    const weekOfCycle = Math.floor(monthIndex / 2);
+
+    // Adjust the number of workouts per week progressively
+    if (dayOfWeek === 0) {
+      if (weekOfCycle === 0) {
+        workoutsPerWeek = 4;  // For the first 2 weeks, 4 workouts per week
+      } else if (weekOfCycle === 1) {
+        workoutsPerWeek = 3;  // For the next 2 weeks, 3 workouts per week
+      } else if (weekOfCycle === 2) {
+        workoutsPerWeek = 2;  // For the next 2 weeks, 2 workouts per week
+      } else if (weekOfCycle === 3) {
+        workoutsPerWeek = 0;  // For the next 2 weeks, 1 workout per week
+      } else {
+        workoutsPerWeek = 0;  // After that, no workouts
+      }
+    }
+
+    // Determine if it's a workout day based on the remaining workouts and probability
+    const isWorkoutDay = workoutsRemaining > 0 && Math.random() < (workoutsPerWeek / 7);
+    if (isWorkoutDay) {
+      workoutsRemaining--;
+    }
+
+    template.push(isWorkoutDay);
+  }
+
+  return template;
+};
+
+
+
 const WorkoutStreak = () => {
   const [totalWorkouts] = useState(() => Math.floor(Math.random() * 5) + 2);
   const [completedWorkouts] = useState(() => Math.floor(Math.random() * (totalWorkouts + 1)));
-  const months = ['Aug', 'Sep', 'Oct', 'Nov'];
-  const gridSize = 28;
+  const months = ['Sep', 'Oct', 'Nov', 'Dec'];
+  const gridSize = 28; // Grid size for each month
   const days = Math.floor(Math.random() * totalWorkouts * 365);
 
-  const generateMonthData = () => {
-    return Array(gridSize).fill(null).map(() => {
-      const hasWorkout = Math.random() < (totalWorkouts / 7);
-      return hasWorkout ? Math.random() < 0.8 : false;
-    });
-  };
-
   const [monthsData] = useState(() =>
-    months.map(() => generateMonthData())
+    months.map(() =>
+      // Use either random or progressive template
+      generateContinuousTemplate(gridSize)
+    )
   );
 
   const gridColumns = totalWorkouts <= 3 ? 3 : totalWorkouts;
 
-  const lastMonthData = monthsData[months.length - 1]; // Get the data of the last month
+  const lastMonthData = monthsData[months.length - 1];
   const lastColumnIndices = [];
   for (let i = gridColumns - 1; i < gridSize; i += gridColumns) {
     lastColumnIndices.push(i);
@@ -62,12 +99,10 @@ const WorkoutStreak = () => {
               <div
                 key={i}
                 className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  i < completedWorkouts
-                    ? 'bg-blue-300'
-                    : 'bg-blue-700'
+                  i < completedWorkouts ? 'bg-blue-300' : 'bg-blue-700'
                 }`}
               >
-                <Check className="w-6 h-6 stroke-2 stroke-white" />
+                <Check strokeWidth={3} className="w-6 h-6 stroke-white" />
               </div>
             ))}
           </div>
@@ -84,9 +119,7 @@ const WorkoutStreak = () => {
                   <div
                     key={i}
                     className={`w-full pt-[100%] rounded ${
-                      isCompleted
-                        ? 'bg-[#93c5fd]'
-                        : 'bg-[#0070d6]'
+                      isCompleted ? 'bg-[#93c5fd]' : 'bg-[#0070d6]'
                     } }`}
                     style={isRandomHighlight ? { boxShadow: 'inset 1px -1px 1px rgba(255, 255, 255, 1), inset -1px -1px 1px rgba(255, 255, 255, 1), inset -1px 1px 1px rgba(255, 255, 255, 1), inset 1px 1px 1px rgba(255, 255, 255, 1)' } : {}}
                   />

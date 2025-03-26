@@ -45,7 +45,7 @@ const generateContinuousTemplate = (gridSize) => {
 const WorkoutStreak = () => {
   const [totalWorkouts] = useState(() => Math.floor(Math.random() * 5) + 2);
   const [completedWorkouts] = useState(() => Math.floor(Math.random() * (totalWorkouts + 1)));
-  const months = ['Sep', 'Oct', 'Nov', 'Dec'];
+  const months = ['Dec', 'Jan', 'Feb', 'March'];
   const gridSize = 28; // Grid size for each month
   const days = Math.floor(Math.random() * totalWorkouts * 365);
 
